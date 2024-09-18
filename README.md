@@ -1,7 +1,11 @@
 Project name: ENGETO_Academy_SQL_project_1.1
+
 Version: 1.1
+
 Project homepage: https://github.com/tereza-langmajerova/ENGETO_SQL_project_1.1
+
 Author name: Tereza Langmajerová
+
 Github username: tereza-langmajerova
 
 Description: 
