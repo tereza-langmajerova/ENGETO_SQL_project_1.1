@@ -1,0 +1,48 @@
+Projekt SQL_1.1
+
+ENGETO Academy
+Datová akademie, 2024_04_17
+Tereza Langmajerová
+
+Výstup:
+t_tereza_langmajerova_project_sql_primary_final
+t_tereza_langmajerova_project_sql_secondary_final
+
+Postup:
+
+V tabulce t_tereza_langmajerova_project_sql_primary_final jsou vložena data ze dvou tabulek (data mezd a potravin). V připravené tabulce je sloupec record_type, podle kterého poznáme, o která data se jedná (salary nebo product_price).
+Data mezd (salary) jsou v rámci let rozdělená podle odvětví (industry_branch_code), data vztahující se k potravinám (product_price) jsou rozdělená podle kódu kategorie (category_code). V rámci let je vytvořený aritmetický průměr z kvartálů.
+Pro zodpovězení výzkumných otázek jsou vytvořeny také pohledy (views): product_prices a salaries, které vrací ceny produktů a mzdy v odvětvích v jednotlivých letech a jejich rozdíl vůči předchozímu roku v procentech.
+V tabulce t_tereza_langmajerova_project_sql_secondary_final jsou pak vyfiltrovaná data z tabulky economies pro období 2000 – 2021.
+
+Výzkumné otázky:
+
+1.
+Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
+
+Výsledek reflektuje nárůst mzdy v rámci odvětví vůči předchozímu roku. Pracujeme s rozdílem mezi hodnotou mzdy předchozího roku a hodnotou mzdy roku následujícího pro jednotlivá odvětví. Pokud je hodnota předchozího roku vyšší než hodnota roku následujícího, pak se odvětví zařadí do kategorie „increasing“, v opačném případě je „decreasing“.
+Ve výsledku vidíme, že v průběhu let průměrná mzda v rámci jednotlivých odvětví různě klesala a rostla, vidíme také o kolik. Např. mzdy v odvětví činnosti v oblasti nemovitostí v průběhu let rostly, v letech 2013 a 2020 zase klesaly.
+
+2.
+Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?
+
+Potřebujeme zjistit, kolik si můžou jednotlivá odvětví koupit chleba a mléka za svou průměrnou mzdu, a to za první a poslední srovnatelné období. To je rok 2006 a 2018 - pro tyto roky máme data. Pomocí podmínek vyfiltrujeme chléb konzumní kmínový podle kódu (11301) a také mléko (114201).
+Množství chleba a mléka pro jednotlivá odvětví v letech 2006 a 2018 je ve výsledku ve sloupci „can_buy“.
+Nerozděleno dle odvětví to pro rok 2006 znamená 191 771 kusů chleba a 214 162 mléka, pro rok 2018 to je celkem 200 549 kusů chleba a 245 288 mléka.
+
+3.
+Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
+
+Nyní využijeme vytvořené view product_prices, které vrací ceny produktů v odvětvích v letech a jejich rozdíl vůči předchozímu roku v procentech.
+Nejnižší percentuální meziroční nárůst je u kategorie banány žluté (0,39 %). U cukru krystal (-0,92 %) a červených rajských jablek (-0,36 %) je naopak zaznamenán záporný růst.
+
+4.
+Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
+
+Použijeme view salaries, ve kterém vidíme mzdy v odvětvích v jednotlivých letech a jejich rozdíl vůči předchozímu roku v procentech. Data pro mzdy máme od roku 2000, ale pro ceny potravin až od roku 2006. Proto ve výsledku v letech 2001-2006 chybí hodnoty.
+V žádném roce není nárůst cen potravin větší než 10 % oproti růstu mezd.
+
+5.
+Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
+
+Výška HDP vliv na změny ve mzdách a cenách potravin nemá. Např. v roce 2006 HDP vzrostlo, spolu s ním i ceny potravin a mzdy. V následujícím roce HDP kleslo, ale mzdy a ceny potravin rostly.
