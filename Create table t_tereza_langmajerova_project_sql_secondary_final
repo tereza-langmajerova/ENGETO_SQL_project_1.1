@@ -1,0 +1,13 @@
+/*
+ * 
+ * CREATE TABLE
+ * DROP TABLE t_tereza_langmajerova_project_sql_secondary_final
+ */
+
+CREATE TABLE t_tereza_langmajerova_project_sql_secondary_final (
+	country CHAR(128) NOT NULL,
+	`year` INT(11) NULL,
+	gdp DOUBLE NULL,
+	gini DOUBLE NULL,
+	taxes DOUBLE NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
