@@ -1,0 +1,15 @@
+/*
+ * 
+ * CREATE TABLE
+ * DROP TABLE t_tereza_langmajerova_project_sql_primary_final
+ */
+
+CREATE TABLE t_tereza_langmajerova_project_sql_primary_final (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	record_type char(128) NULL,
+	industry_branch_code char(1) NULL,
+	category_code int(11) NULL,
+	accounting_year int(11) NULL,
+	value double NULL,
+	PRIMARY KEY (id)
+);
