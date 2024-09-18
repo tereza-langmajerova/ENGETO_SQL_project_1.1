@@ -1,0 +1,28 @@
+/*
+ Insert values into t_tereza_langmajerova_project_sql_primary_final and t_tereza_langmajerova_project_sql_secondary_final
+*/
+
+INSERT INTO t_tereza_langmajerova_project_sql_primary_final (record_type, industry_branch_code, category_code,accounting_year,value)
+SELECT    
+		 'salary',
+		 industry_branch_code,
+		 NULL,
+		 payroll_year,
+		 avg(value) AS value
+FROM czechia_payroll cp 
+WHERE  	cp.calculation_code = 100 AND
+		cp.unit_code = 200 AND 
+		cp.value_type_code  = 5958 AND
+		cp.industry_branch_code IS NOT NULL AND 
+		cp.value IS NOT NULL
+GROUP BY industry_branch_code, payroll_year;
+
+INSERT INTO t_tereza_langmajerova_project_sql_primary_final (record_type, industry_branch_code, category_code,accounting_year,value)
+SELECT	 
+		 'product_price',
+		 NULL,
+		 category_code,
+		 year(date_from), 
+		 avg(Value)
+FROM czechia_price cp 
+GROUP BY category_code,year(date_from);
