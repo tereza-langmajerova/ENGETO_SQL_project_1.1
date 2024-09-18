@@ -1,0 +1,35 @@
+/*
+	create views
+	drop view product_prices
+	drop view salaries
+*/
+
+CREATE VIEW product_prices AS
+	SELECT
+		  category_code,
+		  accounting_year,
+		  value,
+		  IFNULL(LAG(value) OVER (PARTITION BY category_code ORDER BY accounting_year ),0) AS previous_year_value,
+		  value - LAG(value) OVER ( PARTITION BY category_code ORDER BY accounting_year ) AS diff,
+		  ((value*100) / IFNULL(LAG(value) OVER (PARTITION BY category_code ORDER BY accounting_year ),0)) - 100 AS percentage_diff
+	FROM t_tereza_langmajerova_project_sql_primary_final 
+	WHERE record_type = 'product_price' 
+	ORDER BY Category_Code, accounting_year;
+			
+CREATE VIEW salaries AS
+	SELECT
+	  industry_branch_code,
+	  accounting_year,  
+	  value,
+	  IFNULL(LAG(value) OVER (PARTITION BY industry_branch_code ORDER BY accounting_year ),0) AS previous_year_value,
+	  value - LAG(value) OVER ( PARTITION BY industry_branch_code ORDER BY accounting_year ) AS diff,
+	  ((value*100) / IFNULL(LAG(value) OVER (PARTITION BY industry_branch_code ORDER BY accounting_year ),0)) - 100 AS percentage_diff
+	FROM t_tereza_langmajerova_project_sql_primary_final AS ttlpspf 
+	WHERE record_type = 'salary'
+	ORDER BY industry_branch_code, accounting_year;
+
+/*
+	check 
+	select * from product_prices pp 
+	select * from salaries s 
+*/
