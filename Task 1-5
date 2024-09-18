@@ -1,0 +1,120 @@
+/*
+ *##########################################################################
+ *1
+ *##########################################################################
+ */
+
+SELECT  
+	  s.accounting_year,
+	  cpib.Name,
+	  s.value,
+	  s.previous_year_value,
+	  CASE  
+		WHEN s.value < s.previous_year_value 
+			THEN 'decreasing' 
+			ELSE 'increasing' 
+		END,
+	  s.diff
+FROM salaries s
+LEFT JOIN czechia_payroll_industry_branch cpib ON s.industry_branch_code = cpib.code 
+ORDER BY cpib.Name, s.accounting_year;
+
+/*
+ *##########################################################################
+ *2
+ *##########################################################################
+ */
+
+SELECT  
+	cpc.name,
+	cpib.name,	
+	p.accounting_year,
+	p.value,
+	s.value,
+	s.value/p.value AS can_buy 
+FROM t_tereza_langmajerova_project_sql_primary_final p 
+	JOIN t_tereza_langmajerova_project_sql_primary_final s ON p.accounting_year = s.accounting_year AND s.record_type = 'salary'
+	JOIN czechia_payroll_industry_branch cpib on s.Industry_branch_code = cpib.code 
+	JOIN czechia_price_category cpc ON p.Category_code = cpc.code 
+WHERE 
+	p.record_type = 'product_price' AND  
+	p.Category_Code in (111301,114201) AND 
+	p.accounting_year in (2006,2018) 
+ORDER BY CPC.Name, p.accounting_year, Cpib.Name;
+
+/*
+ *##########################################################################
+ *3
+ *##########################################################################
+ */
+
+SELECT 
+	  name,
+	  percentage_diff  
+FROM 
+	(SELECT 
+		CPC.name AS name,
+		AVG(pp.percentage_diff) AS percentage_diff 
+	FROM product_prices pp 
+	JOIN czechia_price_category cpc ON cpc.code = pp.category_code	
+	GROUP BY  pp.category_code
+) C
+WHERE percentage_diff > 0 
+ORDER BY percentage_diff;
+
+/*
+ *##########################################################################
+ *4
+ *##########################################################################
+ */
+SELECT  
+	  salary.accounting_year,
+	  salary.percentage_diff AS salary_percentage_diff,
+	  products.percentage_diff AS product_percentage_diff,
+	  products.percentage_diff - salary.percentage_diff AS diff
+FROM (
+	SELECT 
+		  accounting_year
+		, AVG(percentage_diff) AS percentage_diff 
+	FROM salaries
+ 	WHERE percentage_diff IS NOT NULL GROUP BY accounting_year 
+ 	) salary
+LEFT JOIN (
+	SELECT 
+		  accounting_year
+		, AVG(percentage_diff) AS percentage_diff 
+		FROM product_prices pp  
+		WHERE pp.percentage_diff IS NOT NULL  
+		GROUP BY pp.Accounting_Year 
+	) products ON products.accounting_Year = salary.accounting_Year
+ORDER BY salary.accounting_year;
+
+/*
+ *##########################################################################
+ *5
+ *##########################################################################
+ */
+
+SELECT  
+	  salary.accounting_year,
+	  salary.value AS salary_value,
+	  products.value AS product_value,
+	  e.gdp
+FROM (
+		SELECT 
+			  accounting_year
+			, AVG(value) AS value 
+		FROM salaries 
+		WHERE value IS NOT NULl 
+		GROUP BY accounting_year 
+	) salary
+LEFT JOIN (
+		SELECT 
+			  accounting_year
+			, AVG(value) AS value 
+		FROM product_prices pp  
+		WHERE pp.value IS NOT NULL 
+		GROUP BY pp.Accounting_Year 
+	) products on products.Accounting_Year = salary.Accounting_Year
+LEFT JOIN economies e ON e.year = salary.accounting_year AND e.country = 'Czech Republic'
+ORDER BY Salary.Accounting_year
